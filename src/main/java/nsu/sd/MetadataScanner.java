@@ -9,40 +9,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Serializer сначала проверяет для объекта isSerializable. Если да, то он вызывает getClassMetadata, чтобы получить их
+ */
 public class MetadataScanner {
-    private Map<Class<?>, ClassMetadata> registry;
 
-    public boolean isSerializable(Object object) {
+    public static boolean isSerializable(Object object) {
         Class<?> clazz = object.getClass();
         return clazz.isAnnotationPresent(JsonSerializable.class);
     }
 
     public ClassMetadata getClassMetadata(Object object) {
-        Class<?> clazz = object.getClass();
-        if (!registry.containsKey(clazz)) {
-            ClassMetadata metadata = scanCLass(object, clazz);
-            registry.put(clazz, metadata);
-            return metadata;
-        }
-        return registry.get(clazz);
-    }
-
-    // TODO: create our own exceptions
-    private ClassMetadata scanCLass(Object object, Class<?> clazz) {
-        if (Objects.isNull(object)) {
-            throw new NullPointerException("object is null");
-        }
-
         if (!isSerializable(object)) {
             throw new IllegalArgumentException("object is not serializable");
         }
+        return scanCLass(object.getClass());
+    }
 
+    // TODO: create our own exceptions
+    private ClassMetadata scanCLass(Class<?> clazz) {
         ClassMetadata metadata = new ClassMetadata();
         metadata.setName(clazz.getSimpleName());
         metadata.setClazz(clazz);
         metadata.setSerializable(true);
         metadata.setFields(new HashMap<>());
         for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
             FieldMetadata fieldMetadata = getFieldMetadata(field);
             metadata.getFields().put(field.getName(), fieldMetadata);
         }
