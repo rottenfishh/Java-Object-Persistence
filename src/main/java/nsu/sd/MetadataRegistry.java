@@ -10,6 +10,7 @@ import java.util.Objects;
 /**
  * Точка входа к метаданным.
  * Serializer должен проверить, что object isSerializable, а далее если да, взять его из registry
+ * Лениво подгружает аннотации, при первом обращении
  */
 public class MetadataRegistry {
     private final Map<Class<?>, ClassMetadata> registry;
