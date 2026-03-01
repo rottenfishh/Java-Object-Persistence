@@ -1,5 +1,6 @@
 package nsu.sd;
 
+import nsu.sd.annotations.JsonSerializable;
 import nsu.sd.metadata.ClassMetadata;
 
 import java.util.HashMap;
@@ -19,14 +20,23 @@ public class MetadataRegistry {
         scanner = new MetadataScanner();
     }
 
+    public static boolean isSerializable(Object object) {
+        Class<?> clazz = object.getClass();
+        return clazz.isAnnotationPresent(JsonSerializable.class);
+    }
+
     public ClassMetadata getClassMetadata(Object object) {
         if (Objects.isNull(object)) {
-            throw new IllegalArgumentException("object is null");
+            throw new IllegalArgumentException("Object is null");
+        }
+
+        if (!isSerializable(object)) {
+            throw new IllegalArgumentException("Object is not serializable");
         }
 
         Class<?> clazz = object.getClass();
         if (!registry.containsKey(clazz)) {
-            ClassMetadata metadata = scanner.getClassMetadata(object);
+            ClassMetadata metadata = scanner.scanCLass(clazz);
             registry.put(clazz, metadata);
             return metadata;
         }
