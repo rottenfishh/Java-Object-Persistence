@@ -6,6 +6,7 @@ import nsu.sd.metadata.FieldMetadata;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * сканирует аннотации из класса
@@ -31,7 +32,7 @@ public class MetadataScanner {
         metadata.setName(field.getName());
         if (field.isAnnotationPresent(JsonElement.class)) {
             JsonElement element = field.getAnnotation(JsonElement.class);
-            if (element.name() != null) {
+            if (!Objects.equals(element.name(), "")) {
                 metadata.setName(element.name());
             }
         }
