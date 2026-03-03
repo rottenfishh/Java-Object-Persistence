@@ -8,9 +8,14 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import nsu.sd.metadata.ClassMetadata;
 import nsu.sd.metadata.FieldMetadata;
 import nsu.sd.MetadataRegistry;
-
 import java.io.IOException;
 
+/**
+ * Кастомный десериализатор.
+ * Работает только для классов, помеченных @JsonSerializable.
+ * Создает пустой объект,
+ * получает метаданные класса, проходит по ним в цикле и десериализует.
+ */
 public class CustomJsonDeserializer extends StdDeserializer<Object> {
 
     private final MetadataRegistry registry;

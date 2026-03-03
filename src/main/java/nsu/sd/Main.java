@@ -5,6 +5,8 @@ import nsu.sd.testClasses.Address;
 import nsu.sd.testClasses.Blob;
 import nsu.sd.testClasses.Student;
 
+import java.io.File;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         Blob blob = new Blob();
@@ -46,5 +48,16 @@ public class Main {
         System.out.println("Name: " + restoredAnton.getName());
         System.out.println("Age: " + restoredAnton.getAge());
         System.out.println("Address: " + restoredAnton.getHomeAddress());
+
+        // Запись в файл
+        File myFile = new File("blob.json");
+        mapper.toJsonFile(myFile, blob);
+        System.out.println("\nBlob has been serialized in file.");
+
+        Blob restoredBlob2 = (Blob) mapper.fromJsonFile(myFile, Blob.class);
+        System.out.println("\nRestored object from file: ");
+        System.out.println("Name: " + restoredBlob2.getName());
+        System.out.println("Age: " + restoredBlob2.getAge());
+        System.out.println("Surname: " + restoredBlob2.getSurname());
     }
 }

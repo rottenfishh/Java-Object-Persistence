@@ -10,6 +10,13 @@ import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
 import nsu.sd.serializers.CustomJsonDeserializer;
 import nsu.sd.serializers.CustomJsonSerializer;
 
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * Главный класс, который настраивает перехват работы джексона кастомными (де)сериализаторами.
+ * Для вызовов сериализации и десериализации нужно использовать его.
+ */
 public class JsonMapper {
     private final ObjectMapper mapper;
     private final MetadataRegistry registry;
@@ -46,11 +53,21 @@ public class JsonMapper {
         mapper.registerModule(module);
     }
 
+    // Для строк
     public String toJson(Object obj) throws JsonProcessingException {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
     }
 
     public Object fromJson(String json, Class<?> clazz) throws JsonProcessingException {
         return mapper.readValue(json, clazz);
+    }
+
+    // Для файлов
+    public void toJsonFile(File file, Object obj) throws IOException {
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, obj);
+    }
+
+    public Object fromJsonFile(File file, Class<?> clazz) throws IOException {
+        return mapper.readValue(file, clazz);
     }
 }

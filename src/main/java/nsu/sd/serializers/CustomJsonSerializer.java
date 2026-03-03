@@ -9,6 +9,12 @@ import nsu.sd.metadata.FieldMetadata;
 
 import java.io.IOException;
 
+/**
+ * Кастомный сериализатор.
+ * Работает только для классов, помеченных @JsonSerializable.
+ * Получает метаданные класса, проходит по ним в цикле и сериализует.
+ * Не поддерживает циклические ссылки.
+ */
 public class CustomJsonSerializer extends StdSerializer<Object> {
 
     private final MetadataRegistry registry;
