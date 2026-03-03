@@ -26,6 +26,10 @@ public class MetadataRegistry {
         return clazz.isAnnotationPresent(JsonSerializable.class);
     }
 
+    public static boolean isSerializable(Class<?> clazz) {
+        return clazz.isAnnotationPresent(JsonSerializable.class);
+    }
+
     public ClassMetadata getClassMetadata(Object object) {
         if (Objects.isNull(object)) {
             throw new IllegalArgumentException("Object is null");
