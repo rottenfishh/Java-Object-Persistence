@@ -44,7 +44,7 @@ public class JsonMapper {
             public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
                                                           BeanDescription beanDesc, JsonDeserializer<?> deserializer) {
                 if (MetadataRegistry.isSerializable(beanDesc.getBeanClass())) {
-                    return new CustomJsonDeserializer(registry);
+                    return new CustomJsonDeserializer(registry, beanDesc.getBeanClass());
                 }
                 return deserializer;
             }
