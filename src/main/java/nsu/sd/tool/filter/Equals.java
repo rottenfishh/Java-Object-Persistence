@@ -11,7 +11,7 @@ public class Equals implements Expression{
 
     @Override
     public boolean evaluate(JsonKeysReader keysReader) {
-        if(keysReader.has(key)) return false;
+        if(!keysReader.has(key)) return false;
         return keysReader.get(key).equals(value);
     }
 }

@@ -14,6 +14,6 @@ public class JsonKeysReader {
     }
 
     public boolean has(String key) {
-        return !jsonMap.containsKey(key);
+        return jsonMap.containsKey(key);
     }
 }

@@ -11,7 +11,7 @@ public class GreaterThan implements Expression{
 
     @Override
     public boolean evaluate(JsonKeysReader keysReader) {
-        if(keysReader.has(key)) return false;
+        if(!keysReader.has(key)) return false;
         Object value = keysReader.get(key);
         if(!(value instanceof Number)) return false;
         return ((Number)value).doubleValue() > num;
