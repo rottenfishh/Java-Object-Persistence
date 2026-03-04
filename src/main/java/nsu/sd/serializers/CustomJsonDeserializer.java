@@ -20,26 +20,21 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
 
     private final MetadataRegistry registry;
     private final ObjectMapper basicMapper;
+    private final Class<?> targetClass;
 
-    public CustomJsonDeserializer(MetadataRegistry registry) {
-        super(Object.class);
+    public CustomJsonDeserializer(MetadataRegistry registry, Class<?> targetClass) {
+        super(targetClass);
         this.registry = registry;
         this.basicMapper = new ObjectMapper();
+        this.targetClass = targetClass;
     }
 
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
 
-        JsonNode classNameNode = node.get("_className");
-        if (classNameNode == null) {
-            throw new RuntimeException("Unable to deserialize: _className is missing in JSON");
-        }
-
-        String className = classNameNode.asText();
         try {
-            Class<?> clazz = Class.forName(className);
-            Object instance = clazz.getDeclaredConstructor().newInstance();
+            Object instance = targetClass.getDeclaredConstructor().newInstance();
 
             ClassMetadata metadata = registry.getClassMetadata(instance);
             for (FieldMetadata fieldMeta : metadata.getFields().values()) {
@@ -49,15 +44,14 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
                 JsonNode fieldNode = node.get(jsonFieldName);
 
                 if (fieldNode != null && !fieldNode.isNull()) {
-                    Class<?> targetClass = fieldMeta.getField().getType();
-                    Object value = p.getCodec().treeToValue(fieldNode, targetClass);
-
+                    Class<?> fieldClassType = fieldMeta.getField().getType();
+                    Object value = p.getCodec().treeToValue(fieldNode, fieldClassType);
                     fieldMeta.getField().set(instance, value);
                 }
             }
             return instance;
         } catch (Exception e) {
-            System.out.println("Error while deserializing class " + className + " " + e);
+            System.out.println("Error while deserializing class " + targetClass.getName() + " " + e);
         }
         return null;
     }
