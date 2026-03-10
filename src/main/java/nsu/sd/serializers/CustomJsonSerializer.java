@@ -3,6 +3,7 @@ package nsu.sd.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import exception.TypeNotSupportedException;
 import nsu.sd.MetadataRegistry;
 import nsu.sd.metadata.ClassMetadata;
 import nsu.sd.metadata.FieldMetadata;
@@ -34,6 +35,9 @@ public class CustomJsonSerializer extends StdSerializer<Object> {
 
             if (fieldMeta.isIgnore()) {
                 continue;
+            }
+            if (!fieldMeta.isSupported()) {
+                throw new TypeNotSupportedException("Field " + fieldMeta.getType() + "not supported");
             }
 
             try {

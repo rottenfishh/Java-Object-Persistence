@@ -16,6 +16,7 @@ public class FieldMetadata {
     String name;
     Field field;
     Type type;
+    boolean supported;
     boolean lazy;
     boolean ignore;
     boolean unwrapped;
