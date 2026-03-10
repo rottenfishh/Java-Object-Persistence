@@ -2,6 +2,7 @@ package nsu.sd.tool.filter;
 
 import lombok.AllArgsConstructor;
 import nsu.sd.tool.JsonKeysReader;
+import java.util.Set;
 
 @AllArgsConstructor
 public class GreaterThan implements Expression{
@@ -15,5 +16,10 @@ public class GreaterThan implements Expression{
         Object value = keysReader.get(key);
         if(!(value instanceof Number)) return false;
         return ((Number)value).doubleValue() > num;
+    }
+
+    @Override
+    public Set<String> requiredFields() {
+        return Set.of(key);
     }
 }
