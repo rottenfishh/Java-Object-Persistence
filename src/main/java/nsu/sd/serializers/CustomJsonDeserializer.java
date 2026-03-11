@@ -2,13 +2,16 @@ package nsu.sd.serializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import exception.TypeNotSupportedException;
 import nsu.sd.metadata.ClassMetadata;
 import nsu.sd.metadata.FieldMetadata;
 import nsu.sd.MetadataRegistry;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * Кастомный десериализатор.
@@ -19,12 +22,10 @@ import java.io.IOException;
 public class CustomJsonDeserializer extends StdDeserializer<Object> {
 
     private final MetadataRegistry registry;
-    private final ObjectMapper basicMapper;
 
     public CustomJsonDeserializer(MetadataRegistry registry) {
         super(Object.class);
         this.registry = registry;
-        this.basicMapper = new ObjectMapper();
     }
 
     @Override
@@ -44,13 +45,19 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
             ClassMetadata metadata = registry.getClassMetadata(instance);
             for (FieldMetadata fieldMeta : metadata.getFields().values()) {
                 if (fieldMeta.isIgnore()) continue;
+                if (!fieldMeta.isSupported()) {
+                    throw new TypeNotSupportedException("Field " + fieldMeta.getName() + "not supported");
+                }
 
                 String jsonFieldName = fieldMeta.getName();
                 JsonNode fieldNode = node.get(jsonFieldName);
 
                 if (fieldNode != null && !fieldNode.isNull()) {
-                    Class<?> targetClass = fieldMeta.getField().getType();
-                    Object value = p.getCodec().treeToValue(fieldNode, targetClass);
+                    Type genericType = fieldMeta.getType();
+                    ObjectMapper smartMapper = (ObjectMapper) p.getCodec();
+
+                    JavaType jacksonType = smartMapper.getTypeFactory().constructType(genericType);
+                    Object value = smartMapper.convertValue(fieldNode, jacksonType);
 
                     fieldMeta.getField().set(instance, value);
                 }
