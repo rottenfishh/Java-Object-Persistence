@@ -30,6 +30,7 @@ public class CustomJsonSerializer extends StdSerializer<Object> {
         ClassMetadata metadata = registry.getClassMetadata(value);
 
         gen.writeStartObject();
+        gen.writeStringField("_className", metadata.getClazz().getName());
 
         for (FieldMetadata fieldMeta : metadata.getFields().values()) {
 
