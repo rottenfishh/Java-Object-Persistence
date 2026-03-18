@@ -25,7 +25,7 @@ public class JsonParserTool {
 
             generator.writeStartArray();
 
-            Map<String,Object> currentObject = null;
+            Map<String,Object> currentObject;
             String currentField = null;
 
             while(parser.nextToken() != null) {
@@ -71,7 +71,6 @@ public class JsonParserTool {
                         if(filter.evaluate(reader)) {
                             tokenBuffer.serialize(generator);
                         }
-                        currentObject = null;
                     }
                 }
             }
