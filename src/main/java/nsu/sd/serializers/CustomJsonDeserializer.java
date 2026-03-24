@@ -39,7 +39,9 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
             ClassMetadata metadata = registry.getClassMetadata(instance);
             for (FieldMetadata fieldMeta : metadata.getFields().values()) {
                 if (fieldMeta.isIgnore()) continue;
-
+                if (!fieldMeta.isSupported()) {
+                    throw new TypeNotSupportedException("Field " + fieldMeta.getName() + " is not supported");
+                }
                 String jsonFieldName = fieldMeta.getName();
                 JsonNode fieldNode = node.get(jsonFieldName);
 
