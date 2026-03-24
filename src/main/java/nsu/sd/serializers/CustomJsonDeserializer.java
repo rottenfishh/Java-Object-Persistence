@@ -12,6 +12,8 @@ import nsu.sd.metadata.FieldMetadata;
 import nsu.sd.MetadataRegistry;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Кастомный десериализатор.
@@ -22,6 +24,7 @@ import java.lang.reflect.Type;
 public class CustomJsonDeserializer extends StdDeserializer<Object> {
 
     private final MetadataRegistry registry;
+    public static final ThreadLocal<Map<Integer, Object>> RESOLVED_OBJECTS = ThreadLocal.withInitial(HashMap::new);
 
     public CustomJsonDeserializer(MetadataRegistry registry) {
         super(Object.class);
@@ -30,7 +33,18 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
 
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        Map<Integer, Object> resolvedObjects = RESOLVED_OBJECTS.get();
+
         JsonNode node = p.getCodec().readTree(p);
+
+        if (node.has("@ref")) {
+            int refId = node.get("@ref").asInt();
+            Object existingObj = resolvedObjects.get(refId);
+            if (existingObj == null) {
+                throw new RuntimeException("Wrong reference! Object with ID " + refId + " not found.");
+            }
+            return existingObj;
+        }
 
         JsonNode classNameNode = node.get("_className");
         if (classNameNode == null) {
@@ -38,9 +52,14 @@ public class CustomJsonDeserializer extends StdDeserializer<Object> {
         }
 
         String className = classNameNode.asText();
+        int objId = node.has("@id") ? node.get("@id").asInt() : -1;
         try {
             Class<?> clazz = Class.forName(className);
             Object instance = clazz.getDeclaredConstructor().newInstance();
+
+            if (objId != -1) {
+                resolvedObjects.put(objId, instance);
+            }
 
             ClassMetadata metadata = registry.getClassMetadata(instance);
             for (FieldMetadata fieldMeta : metadata.getFields().values()) {

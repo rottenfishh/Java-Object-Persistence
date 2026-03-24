@@ -9,16 +9,18 @@ import nsu.sd.metadata.ClassMetadata;
 import nsu.sd.metadata.FieldMetadata;
 
 import java.io.IOException;
+import java.util.IdentityHashMap;
 
 /**
  * Кастомный сериализатор.
  * Работает только для классов, помеченных @JsonSerializable.
  * Получает метаданные класса, проходит по ним в цикле и сериализует.
- * Не поддерживает циклические ссылки.
+ * Поддерживает циклические ссылки.
  */
 public class CustomJsonSerializer extends StdSerializer<Object> {
 
     private final MetadataRegistry registry;
+    public static final ThreadLocal<IdentityHashMap<Object, Integer>> SEEN_OBJECTS = ThreadLocal.withInitial(IdentityHashMap::new);
 
     public CustomJsonSerializer(MetadataRegistry registry) {
         super(Object.class);
@@ -27,9 +29,22 @@ public class CustomJsonSerializer extends StdSerializer<Object> {
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        IdentityHashMap<Object, Integer> seenObjects = SEEN_OBJECTS.get();
+
+        if (seenObjects.containsKey(value)) {
+            gen.writeStartObject();
+            gen.writeNumberField("@ref", seenObjects.get(value));
+            gen.writeEndObject();
+            return;
+        }
+
+        int newId = seenObjects.size() + 1;
+        seenObjects.put(value, newId);
+
         ClassMetadata metadata = registry.getClassMetadata(value);
 
         gen.writeStartObject();
+        gen.writeNumberField("@id", newId);
         gen.writeStringField("_className", metadata.getClazz().getName());
 
         for (FieldMetadata fieldMeta : metadata.getFields().values()) {

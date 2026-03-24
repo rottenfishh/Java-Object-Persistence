@@ -54,20 +54,40 @@ public class JsonMapper {
     }
 
     // Для строк
-    public String toJson(Object obj) throws JsonProcessingException {
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+    public String toJson(Object obj) throws JsonProcessingException   {
+        CustomJsonSerializer.SEEN_OBJECTS.get().clear();
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } finally {
+            CustomJsonSerializer.SEEN_OBJECTS.get().clear();
+        }
     }
 
-    public Object fromJson(String json, Class<?> clazz) throws JsonProcessingException {
-        return mapper.readValue(json, clazz);
+    public Object fromJson(String json, Class<?> clazz) throws JsonMappingException, JsonProcessingException   {
+        CustomJsonDeserializer.RESOLVED_OBJECTS.get().clear();
+        try {
+            return mapper.readValue(json, clazz);
+        } finally {
+            CustomJsonDeserializer.RESOLVED_OBJECTS.get().clear();
+        }
     }
 
     // Для файлов
     public void toJsonFile(File file, Object obj) throws IOException {
-        mapper.writerWithDefaultPrettyPrinter().writeValue(file, obj);
+        CustomJsonSerializer.SEEN_OBJECTS.get().clear();
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, obj);
+        } finally {
+            CustomJsonSerializer.SEEN_OBJECTS.get().clear();
+        }
     }
 
     public Object fromJsonFile(File file, Class<?> clazz) throws IOException {
-        return mapper.readValue(file, clazz);
+        CustomJsonDeserializer.RESOLVED_OBJECTS.get().clear();
+        try {
+            return mapper.readValue(file, clazz);
+        } finally {
+            CustomJsonDeserializer.RESOLVED_OBJECTS.get().clear();
+        }
     }
 }
