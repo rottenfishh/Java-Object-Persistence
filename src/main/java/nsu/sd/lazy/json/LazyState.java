@@ -1,4 +1,4 @@
-package nsu.sd.lazy;
+package nsu.sd.lazy.json;
 
 import lombok.Getter;
 import nsu.sd.metadata.IndexClassMetadata;

@@ -3,6 +3,8 @@ package nsu.sd.lazy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nsu.sd.lazy.indexing.IndexedJsonReader;
 import nsu.sd.lazy.indexing.JsonIndexer;
+import nsu.sd.lazy.json.LazyProxyFactory;
+import nsu.sd.lazy.json.LazyState;
 import nsu.sd.metadata.IndexClassMetadata;
 import nsu.sd.testClasses.User;
 import nsu.sd.tool.filter.Expression;

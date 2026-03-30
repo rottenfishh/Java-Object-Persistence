@@ -1,8 +1,8 @@
 package nsu.sd.tool;
 
 import nsu.sd.lazy.LazyObjectFilter;
-import nsu.sd.lazy.LazyProxyFactory;
-import nsu.sd.lazy.LazyState;
+import nsu.sd.lazy.json.LazyProxyFactory;
+import nsu.sd.lazy.json.LazyState;
 import nsu.sd.lazy.indexing.IndexedJsonReader;
 import nsu.sd.metadata.IndexClassMetadata;
 

@@ -1,6 +1,8 @@
 package nsu.sd.lazy;
 
 import nsu.sd.lazy.indexing.IndexedJsonReader;
+import nsu.sd.lazy.json.LazyProxyFactory;
+import nsu.sd.lazy.json.LazyState;
 import nsu.sd.metadata.IndexClassMetadata;
 
 import java.util.ArrayList;

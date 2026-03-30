@@ -1,4 +1,4 @@
-package nsu.sd.lazy;
+package nsu.sd.lazy.nodeJson;
 
 import net.bytebuddy.implementation.bind.annotation.FieldValue;
 import net.bytebuddy.implementation.bind.annotation.Origin;

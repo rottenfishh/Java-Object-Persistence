@@ -1,4 +1,4 @@
-package nsu.sd.lazy;
+package nsu.sd.lazy.nodeJson;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;

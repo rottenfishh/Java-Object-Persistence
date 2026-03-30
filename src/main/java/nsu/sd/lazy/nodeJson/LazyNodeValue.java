@@ -1,4 +1,4 @@
-package nsu.sd.lazy;
+package nsu.sd.lazy.nodeJson;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
