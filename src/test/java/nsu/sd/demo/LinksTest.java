@@ -46,6 +46,11 @@ public class LinksTest {
 
         File myFile = new File("blob.json");
         mapper.toJsonFile(myFile, nsu);
+
+        University restoredNsu = (University) mapper.fromJson(json, University.class);
+        University.Student restoredAnton = restoredNsu.students.get(0);
+        // Один и тот же объект в памяти
+        assertSame(restoredAnton.university, restoredNsu);
     }
 
     @Test
@@ -71,5 +76,9 @@ public class LinksTest {
         mapper.toJsonFile(file, project);
         assertTrue(json.contains("@id"));
         assertTrue(json.contains("@ref"));
+
+        Project restoredProject = (Project) mapper.fromJson(json, Project.class);
+        // Один и тот же объект в памяти
+        assertSame(restoredProject.frontend.laptop, restoredProject.backend.laptop);
     }
 }

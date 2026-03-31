@@ -31,5 +31,7 @@ public class DeserializationTest {
         Project project = (Project) mapper.fromJsonFile(file, Project.class);
         assertNotNull(project);
         assertEquals("Bob", project.backend.name);
+        assertEquals("Alice", project.frontend.name);
+        assertEquals("MacBook Pro", project.backend.laptop.model);
     }
 }
