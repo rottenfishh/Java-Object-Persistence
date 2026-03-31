@@ -1,0 +1,22 @@
+{
+  "@id" : 1,
+  "_className" : "nsu.sd.testClasses.Project",
+  "backend" : {
+    "@id" : 2,
+    "_className" : "nsu.sd.testClasses.Project$Developer",
+    "name" : "Bob",
+    "laptop" : {
+      "@id" : 3,
+      "_className" : "nsu.sd.testClasses.Project$Laptop",
+      "model" : "MacBook Pro"
+    }
+  },
+  "frontend" : {
+    "@id" : 4,
+    "_className" : "nsu.sd.testClasses.Project$Developer",
+    "name" : "Alice",
+    "laptop" : {
+      "@ref" : 3
+    }
+  }
+}

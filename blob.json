@@ -1,0 +1,6 @@
+{
+  "@id" : 1,
+  "_className" : "nsu.sd.testClasses.Blob",
+  "CoolName" : "Blob",
+  "age" : 5
+}
