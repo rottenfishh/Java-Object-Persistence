@@ -62,7 +62,6 @@ public class LazyDeserializationTest {
         assertEquals("Alice", user.getName());
         assertNotNull(user.getProfile());
 
-        // проверяем, что это не обычный Profile, а proxy-класс
         assertNotEquals(Profile.class, user.getProfile().getClass());
     }
 
